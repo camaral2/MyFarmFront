@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Admin Panel</title>
+    <style>
+        :root {
+            --primary: #4e73df;
+            --dark: #5a5c69;
+            --light: #f8f9fc;
+            --danger: #e74a3b;
+            --success: #1cc88a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { 
+            display: flex; 
+            min-height: 100vh; 
+            background: var(--light); 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        /* LOGIN CARD */
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+        }
+        .login-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .login-card h1 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        .login-card img.logo {
+            width: 80px;
+            margin-bottom: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-login:hover {
+            background: #3a5bc7;
+        }
+        .login-footer {
+            margin-top: 1.5rem;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .alert {
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.alert-error {
+    background-color: #f8d7da; /* Vermelho claro */
+    color: #721c24; /* Vermelho escuro */
+    border: 1px solid #f5c6cb;
+}
+
+/* Adicione para outros tipos (sucesso, aviso) */
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert alert-{{ messages[0][0] }}">
+                {{ messages[0][1] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+        <div class="login-card">
+            <!-- Replace with your logo -->
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" 
+            style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;" 
+            alt="Logo" class="logo">
+            <h1>MyFarm</h1>
+            
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="admin@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-login">Sign In</button>
+            </form>
+
+            <div class="login-footer">
+                <a href="#">Forgot Password?</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

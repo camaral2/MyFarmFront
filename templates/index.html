@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+<!-- Override sidebar block -->
+{% block sidebar %}
+    {% include "sidebar.html" %}
+{% endblock %}
+
+<!-- Override header block -->
+{% block header %}
+    {% include "header.html" %}
+{% endblock %}
+
+<!-- Main content -->
+{% block content %}
+        <!-- STATS CARDS -->
+        <div class="cards">
+            <div class="card">
+                <h3>Total Users</h3>
+                <p>1,024</p>
+            </div>
+            <div class="card">
+                <h3>Revenue</h3>
+                <p>$12,345</p>
+            </div>
+            <div class="card">
+                <h3>Pending Orders</h3>
+                <p>24</p>
+            </div>
+        </div>
+
+        <!-- DATA TABLE (CRUD) -->
+        <div class="table-container">
+            <h2>Recent Users</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>
+                            <button class="btn btn-edit">Edit</button>
+                            <button class="btn btn-delete">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+{% endblock %}
