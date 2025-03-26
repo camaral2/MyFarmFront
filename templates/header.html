@@ -1,4 +1,4 @@
 <div class="header">
-    <h1>{% block page_title %}Dashboard{% endblock %}</h1>
-    <div>Welcome back, <strong>Admin</strong>!</div>
+    <h1>{{page_title}}</h1>
+    <div>Welcome, <strong>{{ session.get('logged_in')['email'] }}</strong> !</div>
 </div>

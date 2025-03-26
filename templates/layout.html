@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Admin Dashboard{% endblock %}</title>
+    <title>{% block page_title %}My Farm{% endblock %}</title>
+    {% set page_title = self.page_title() %}
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -18,7 +19,7 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="alert alert-{{ messages[0][0] }}">
-                {{ messages[0][1] }}
+                {{ messages[0][1] | safe}}
             </div>
         {% endif %}
         {% endwith %}

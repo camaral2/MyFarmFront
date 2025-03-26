@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block page_title %}Cultures Management{% endblock %}
+
+<!-- Override sidebar block -->
+{% block sidebar %}
+    {% include "sidebar.html" %}
+{% endblock %}
+
+<!-- Override header block -->
+{% block header %}
+    {% include "header.html" %}
+{% endblock %}
+
+<!-- Main content -->
+{% block content %}
+<div class="controls">
+    <!-- Add Button -->
+    <button class="add-button" onclick="openAddCultureModal()">
+      <i class="fas fa-plus"></i> Create New
+    </button>
+  </div>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Month Start</th>
+                <th>Month End</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for culture in cultures %}
+            <tr>
+                <td>{{ culture.name }}</td>
+                <td>{{ culture.month_start_name }}</td>
+                <td>{{ culture.month_end_name }}</td>
+                <td>
+                    <button class="btn btn-edit">Edit</button>
+                    <button class="btn btn-delete">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

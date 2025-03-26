@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% block page_title %}Dashboard{% endblock %}
 
 <!-- Override sidebar block -->
 {% block sidebar %}
@@ -15,39 +16,39 @@
         <!-- STATS CARDS -->
         <div class="cards">
             <div class="card">
-                <h3>Total Users</h3>
-                <p>1,024</p>
+                <h3>Total Cultures</h3>
+                <p>{{ cultures | count}}</p>
             </div>
             <div class="card">
                 <h3>Revenue</h3>
                 <p>$12,345</p>
             </div>
             <div class="card">
-                <h3>Pending Orders</h3>
-                <p>24</p>
+                <h3 title="teste">Moon Phase</h3>
+                <p title="{{ moon_phase_portugues }}">{{ moon_phase }}</p>
             </div>
         </div>
 
         <!-- DATA TABLE (CRUD) -->
         <div class="table-container">
-            <h2>Recent Users</h2>
+            <h2>Actives Cultures</h2>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
+                        <th>Month Start</th>
+                        <th>Month End</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for user in users %}
+                    {% for culture in cultures %}
                     <tr>
-                        <td>{{ user.id }}</td>
-                        <td>{{ user.name }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>{{ user.role }}</td>
+                        <td>{{ culture.id }}</td>
+                        <td>{{ culture.name }}</td>
+                        <td>{{ culture.month_start_name }}</td>
+                        <td>{{ culture.month_end_name }}</td>
                         <td>
                             <button class="btn btn-edit">Edit</button>
                             <button class="btn btn-delete">Delete</button>
