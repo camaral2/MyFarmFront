@@ -1,145 +1,88 @@
+from datetime import datetime
 import requests  # Add this import at the top of your app.py
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, Flask, render_template, request, redirect, url_for, session, flash
 import calendar
 import time
+from api_client import APIClient
+import api_client
+from user_login import User_Login
+from util import get_moon_phase, translate_phase_moon, month_desc
+from culture import culture_blueprint
+from auth import auth_blueprint
+from events import events_blueprint
+from datetime import timedelta
 
-from util import translate_phase_moon
+from flask_login import login_required, current_user, LoginManager
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Required for session management
+
 api_url = "http://127.0.0.1:8000/"  # Replace with your API URL
 
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app=app)
 
-def get_moon_phase():
-    timestamp = int(time.time())  # current UNIX time
-    url = f"https://api.farmsense.net/v1/moonphases/?d={timestamp}"
+@login_manager.user_loader
+def load_user(user_id):
+    user_data = session.get('user_data')
+    if user_data and str(user_data.get('id')) == user_id:
+        return User_Login(
+            id=user_data.get('id'),
+            name=user_data.get('name'),
+            email=user_data.get('email')
+        )
+    return None
 
-    response = requests.get(url)
-    data = response.json()
+@app.context_processor
+def inject_user():
+    return dict(current_user=current_user)
 
-    return  data[0]["Phase"]
 
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(minutes=5)
+    
+@app.errorhandler(401)
+def custom_401(error):
+    return render_template("401.html"), 401
+
+@login_required
 @app.route("/")
 def admin_dashboard():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
+    try:
+        client = APIClient(api_url)        
+        cultures = client.get("/culture")
+    except RuntimeError as e:
+        flash(str(e), "error")
+        cultures = []
     
     try:
-        # Fetch users from API
-        response = requests.get(
-            url = api_url + "/culture/active",
-            headers={"Authorization": f"Bearer {session.get('user_token')}"}  # If auth is needed
-        )
-        response.raise_for_status()  # Raise error for bad status codes (4xx/5xx)
-        cultures = response.json()  # Parse JSON response
-        
-        for culture in cultures:
-            culture["month_start_name"] = calendar.month_name[culture["month_start"]] if culture.get("month_start") else ''
-            culture["month_end_name"] = calendar.month_name[culture["month_end"]] if culture.get("month_end") else ''
-    
-    
+        moon_phase_english = get_moon_phase() 
+        moon_phase_portuguese = translate_phase_moon(moon_phase_english)
     except requests.exceptions.RequestException as e:
-        if response.status_code == requests.codes.unauthorized:
-            flash('Session expired. <a href="/login">Click here to log in again</a>.', 'error')
-        else:
-            flash(f"API Error: {str(e)}", "error")
-        cultures = []  # Fallback empty list   
-    
-    moon_phase_english = get_moon_phase() 
-    
+        flash(f"Moon Phase - Error: {str(e)}", "error")
+        
+        
+    months = list(range(1, 13))
+    list_month_desc = month_desc()
+    current_month = datetime.now().month
+    current_month_desc = list_month_desc[current_month-1]
+
     return render_template("index.html", 
         cultures=cultures, 
         moon_phase = moon_phase_english,
-        moon_phase_portugues = translate_phase_moon(moon_phase_english)
+        moon_phase_portugues = moon_phase_portuguese,
+        months = months,
+        month_desc = list_month_desc,
+        current_month_desc = current_month_desc,
+        current_month = current_month
         )
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        
-        try:
-            # Fetch users from API
-            response = requests.post(
-                url = api_url + "/login",
-                data={"username": email, "password": password},  
-            )
-            response.raise_for_status()  # Raise error for bad status codes (4xx/5xx)
-            
-            api_data = response.json()
-            session['user_token'] = api_data.get('access_token')  # Store API token if provided
-                        
-            user = api_data.get('user')
-            session['logged_in'] = user
-                                    
-            return redirect(url_for('admin_dashboard'))
-                        
-        except requests.exceptions.RequestException as e:
-            error_msg = "Invalid credentials" if response.status_code == requests.codes.forbidden else f"API Error: {str(e)}"
-            flash(error_msg, "error")
-
-    return render_template('login.html')
-
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    session.pop('user_token', None)
-    
-    return redirect(url_for('login'))
-
-
-@app.route('/add-culture', methods=['GET', 'POST'])
-def add_culture():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        month = request.form.get('month')
-        is_active = True if request.form.get('isActive') else False
-        
-        # Validation
-        if not name:
-            flash('Name is mandatory!', 'error')
-        else:
-            # Save to database (pseudo-code)
-            # db.save(name, month, is_active)
-            flash('User added successfully!', 'success')
-            return redirect(url_for('add_culture'))  # PRG pattern
-            
-    return render_template('add_culture.html')
-
-
-
-@app.route("/cultures")
-def list_cultures():
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-    
-    try:
-        # Fetch users from API
-        response = requests.get(
-            url = api_url + "/culture",
-            headers={"Authorization": f"Bearer {session.get('user_token')}"}  # If auth is needed
-        )
-        response.raise_for_status()  # Raise error for bad status codes (4xx/5xx)
-        cultures = response.json()  # Parse JSON response
-        
-        for culture in cultures:
-            culture["month_start_name"] = calendar.month_name[culture["month_start"]] if culture.get("month_start") else ''
-            culture["month_end_name"] = calendar.month_name[culture["month_end"]] if culture.get("month_end") else ''
-    
-    except requests.exceptions.RequestException as e:
-        if response.status_code == requests.codes.unauthorized:
-            flash('Session expired. <a href="/login">Click here to log in again</a>.', 'error')
-        else:
-            flash(f"API Error: {str(e)}", "error")
-        cultures = []  # Fallback empty list    
-    
-    return render_template("culture/list_culture.html", cultures=cultures)
-
-@app.errorhandler(401)
-def custom_401(error):
-    return render_template('401.html'), 401
-
+app.register_blueprint(culture_blueprint, url_prefix='/culture')
+app.register_blueprint(events_blueprint, url_prefix='/event')
+app.register_blueprint(auth_blueprint, url_prefix='/')
 
 if __name__ == "__main__":
     app.run(debug=True)

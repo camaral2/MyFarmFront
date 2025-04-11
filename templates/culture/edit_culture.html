@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+<!-- Override sidebar block -->
+{% block sidebar %}
+{% include "sidebar.html" %}
+{% endblock %}
+
+<!-- Override header block -->
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
+
+{% block page_title %}
+  {% if is_edit %}
+    Edit Cultures
+  {% else %}
+    Add Cultures
+  {% endif %}
+{% endblock %}
+
+<!-- Main content -->
+{% block content %}
+
+
+<div class="card">
+<form method="POST" action="{{ form_action }}">
+    <input id="id" name="id" type="hidden" value="{{ culture.id }}">
+    <div class="form-group">
+        <label for="name" class="required">Name</label>
+        <input type="text" id="name" name="name" required value="{{ culture.name if culture else '' }}">
+    </div>
+
+    <div class="form-group">
+        <label for="month_start" class="required">Start Month</label>
+        <div class="custom-select">
+        <select id="month_start" name="month_start" required>
+            <option value="">Select month</option>
+            {% for i, m in months %}
+                <option value="{{ i }}"
+                    {% if culture and culture.month_start == i %}selected{% endif %}>
+                    {{ m }}
+                </option>
+            {% endfor %}
+        </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="month_end" class="required">End Month</label>
+        <div class="custom-select">
+        <select id="month_end" name="month_end" required>
+            <option value="">Select month</option>
+            {% for i, m in months %}
+                <option value="{{ i }}"
+                    {% if culture and culture.month_end == i %}selected{% endif %}>
+                    {{ m }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    </div>
+
+    <div class="form-group checkbox-group">
+        <input type="checkbox" id="isActive" name="isActive" {% if culture and culture.isActive %}checked{% endif %}>
+        <label for="isActive">Active Culture</label>
+    </div>
+
+    <button type="submit" class="btn-submit">Submit</button>
+</form>
+</div>
+{% endblock %}

@@ -1,63 +1,70 @@
-{% extends "layout.html" %}
-{% block page_title %}Dashboard{% endblock %}
+{% extends "layout.html" %} {% block page_title %}Dashboard{% endblock %}
 
 <!-- Override sidebar block -->
-{% block sidebar %}
-    {% include "sidebar.html" %}
-{% endblock %}
+{% block sidebar %} {% include "sidebar.html" %} {% endblock %}
 
 <!-- Override header block -->
-{% block header %}
-    {% include "header.html" %}
-{% endblock %}
+{% block header %} {% include "header.html" %} {% endblock %}
 
 <!-- Main content -->
 {% block content %}
-        <!-- STATS CARDS -->
-        <div class="cards">
-            <div class="card">
-                <h3>Total Cultures</h3>
-                <p>{{ cultures | count}}</p>
-            </div>
-            <div class="card">
-                <h3>Revenue</h3>
-                <p>$12,345</p>
-            </div>
-            <div class="card">
-                <h3 title="teste">Moon Phase</h3>
-                <p title="{{ moon_phase_portugues }}">{{ moon_phase }}</p>
-            </div>
-        </div>
+<!-- STATS CARDS -->
+<div class="cards">
+  <div class="card">
+    <h3>Total Cultures</h3>
+    <p>{{ cultures | count}}</p>
+  </div>
+  <div class="card">
+    <h3>Revenue</h3>
+    <p>$12,345</p>
+  </div>
+  <div class="card">
+    <h3 title="teste">Moon Phase</h3>
+    <p title="{{ moon_phase_portugues }}">{{ moon_phase }}</p>
+  </div>
+</div>
 
-        <!-- DATA TABLE (CRUD) -->
-        <div class="table-container">
-            <h2>Actives Cultures</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Month Start</th>
-                        <th>Month End</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for culture in cultures %}
-                    <tr>
-                        <td>{{ culture.id }}</td>
-                        <td>{{ culture.name }}</td>
-                        <td>{{ culture.month_start_name }}</td>
-                        <td>{{ culture.month_end_name }}</td>
-                        <td>
-                            <button class="btn btn-edit">Edit</button>
-                            <button class="btn btn-delete">Delete</button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+<!-- DATA TABLE (CRUD) -->
+<div class="table-container">
+  <div class="timeline">
+    <h2>Crop Cultivation Timeline</h2>
 
-
+    <table>
+      <thead>
+        <tr>
+          <th class="timeline_culture">Culture</th>
+          {% for month in month_desc %}
+          <th
+            class="{% if month == current_month_desc %}timeline_current-month{% endif %} timeline_month"
+          >
+            {{ month }}
+          </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cultures %}
+        <tr>
+          <td class="timeline_culture">
+            <a href="{{ url_for('events.list_events', idculture=item.id) }}" class="action-link" title="Events List"><i class="fas fa-eye"></i></a>
+              {{ item.name }}
+          </td>
+          {% for month in months %} {% set crosses_year = item.month_end <
+          item.month_start %} {% if (not crosses_year and month >=
+          item.month_start and month <= item.month_end) or (crosses_year and
+          (month >= item.month_start or month <= item.month_end)) %}
+          <td
+            class="active check timeline_month {% if month == current_month %}timeline_current-month{% endif %}"
+          ></td>
+          {% else %}
+          <td
+            class="timeline_month {% if month == current_month %}timeline_current-month{% endif %}"
+          ></td>
+          {% endif %} {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}

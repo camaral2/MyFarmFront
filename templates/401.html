@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Unauthorized</title>
-</head>
-<body>
-    <h1>401 - Unauthorized</h1>
-    <p>You do not have permission to access this page.</p>
-</body>
-</html>
+{% extends "layout.html" %}
+{% block page_title %}Unauthorized{% endblock %}
+
+
+<!-- Main content -->
+{% block content %}
+<div class="cards_error">
+    <div class="card"  style="margin: auto;">
+        <h1 style="text-align: center; padding: 30px;">My Farm</h1>
+        <h3 style="padding: 0px 40px;">401 - Unauthorized</h3>
+        <h2 style="padding: 0px 40px;">You do not have permission to access this page.</h2>
+        <h4 style="text-align: center; padding: 40px;"><a href="/login">Click here to log in again</a></h4>
+    </div>
+</div>
+
+
+{% endblock %}

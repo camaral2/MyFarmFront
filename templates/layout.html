@@ -6,6 +6,9 @@
     <title>{% block page_title %}My Farm{% endblock %}</title>
     {% set page_title = self.page_title() %}
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    {% block head_page %}{% endblock %}
 </head>
 <body>
     <!-- Sidebar -->
@@ -26,5 +29,6 @@
 
         {% block content %}{% endblock %}
     </div>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

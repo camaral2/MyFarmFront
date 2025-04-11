@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+<!-- Override sidebar block -->
+{% block sidebar %}
+{% include "sidebar.html" %}
+{% endblock %}
+
+<!-- Override header block -->
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
+
+{% block page_title %}
+  {% if is_edit %}
+    Edit Cultures Event
+  {% else %}
+    Add Cultures Event
+  {% endif %}
+{% endblock %}
+
+<!-- Main content -->
+{% block content %}
+
+
+<div class="card">
+<form method="POST" action="{{ form_action }}">
+    <input id="id" name="id" type="hidden" value="{{ Event_Culture.id if Event_Culture else 0 }}">
+    <input id="idculture" name="idculture" type="hidden" value="{{ culture.id }}">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" readonly value="{{ culture.name if culture else '' }}">
+    </div>
+
+    <div class="form-group">
+        <label for="date" class="required">Date</label>
+        <input type="date" id="date_event" name="date_event"
+        value="{% if Event_Culture and Event_Culture.date %}{{ Event_Culture.date.strftime('%Y-%m-%d') }}{% else %}{{ datetime.utcnow().strftime('%Y-%m-%d') }}{% endif %}">
+     </div>
+
+    <div class="form-group">
+        <label for="event" class="required">Event</label>
+        <input type="text" id="event" name="event" value="{{ Event_Culture.event if Event_Culture else '' }}">
+    </div>
+
+    <div class="form-group">
+        <label for="type" class="required">Mode</label>
+        <div class="custom-select">
+            <select id="mode" name="mode" required>
+                <option value="">Select mode</option>
+                {% for t in modes %}
+                    <option value="{{ t.id }}"
+                        {% if Event_Culture and Event_Culture.mode == t.id %}selected{% endif %}>
+                        {{ t.desc }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="detail">Detail</label>
+        <textarea id="detail" name="detail">{{ Event_Culture.detail if Event_Culture else ''}}</textarea>
+    </div>    
+
+    <button type="submit" class="btn-submit">Submit</button>
+</form>
+</div>
+{% endblock %}

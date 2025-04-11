@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+{% block page_title %}Cultures Events{% endblock %}
+
+{% block head_page %}
+<link rel="stylesheet" href="{{ url_for('static', filename='events.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='confirm.css') }}">
+{% endblock %}
+
+<!-- Override sidebar block -->
+{% block sidebar %}
+{% include "sidebar.html" %}
+{% endblock %}
+
+<!-- Override header block -->
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
+
+<!-- Main content -->
+{% block content %}
+    
+<div class="card">
+  <form method="POST" action="{{ form_action }}">
+      <div class="form-group">
+          <div class="custom-select">
+          <select id="culture" name="culture" onchange="this.form.submit()">
+              {% for culture in cultures %}
+                  <option value="{{ culture.id }}"
+                      {% if idculture and culture.id == idculture %}selected{% endif %}>
+                      {{ culture.name }}
+                  </option>
+              {% endfor %}
+          </select>
+          </div>
+      </div>
+  </form>
+</div>
+<div class="controls">
+    <form action="{{ url_for('events.edit_event', idculture=culture.id, id=0) }}" method="GET">
+        <button type="submit" class="add-button">
+            <i class="fas fa-plus"></i> Create New Event
+        </button>
+    </form>
+</div>
+<div class="timeline-container">
+    {% if events_culture %}
+      {% for event in events_culture %}
+<div class="card">
+
+        <div class="timeline-item">
+          <div class="date-box">
+            <div class="month">{{ event.date.strftime('%b').upper() }}</div>
+            <div class="day">{{ event.date.strftime('%d') }}</div>
+            <div class="year">{{ event.date.strftime('%Y') }}</div>
+          </div>
+    
+          <div class="content-box">
+            <h4>{{ event.event }} <span class="tag tag-{{ event.mode_desc|lower}}">{{ event.mode_desc }}</span></h4> 
+
+            <div class="time">
+              {{ event.detail }}
+            </div>
+    
+            <div class="actions">
+              <form method="POST" action="{{ url_for('events.delete_event', id=event.id) }}">
+                <a href="{{ url_for('events.edit_event', idculture=culture.id, id=event.id) }}">Editar</a> |
+                <a href="#" data-confirm="Do you really want to delete '{{ event.event }}'?">Delete</a>
+            </form>
+            </div>
+          </div>
+        </div>
+</div>
+      {% endfor %}
+    {% else %}
+    <div class="card">
+      <div class="empty-state">
+        <h3>{{culture.name}} - No events found</h3>
+        <p>You haven't added any events for this crop yet.</p>
+    </div>
+  </div>
+    {% endif %}
+</div>
+{% include "components/confirm.html" %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/confirm.js') }}"></script>
+{% endblock %}

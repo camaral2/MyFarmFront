@@ -3,22 +3,23 @@
 
 <!-- Override sidebar block -->
 {% block sidebar %}
-    {% include "sidebar.html" %}
+{% include "sidebar.html" %}
 {% endblock %}
 
 <!-- Override header block -->
 {% block header %}
-    {% include "header.html" %}
+{% include "header.html" %}
 {% endblock %}
 
 <!-- Main content -->
 {% block content %}
 <div class="controls">
-    <!-- Add Button -->
-    <button class="add-button" onclick="openAddCultureModal()">
-      <i class="fas fa-plus"></i> Create New
-    </button>
-  </div>
+    <form action="{{ url_for('culture.edit_culture', id=0) }}" method="GET">
+        <button type="submit" class="add-button">
+            <i class="fas fa-plus"></i> Create New
+        </button>
+    </form>
+</div>
 <div class="table-container">
     <table>
         <thead>
@@ -35,9 +36,16 @@
                 <td>{{ culture.name }}</td>
                 <td>{{ culture.month_start_name }}</td>
                 <td>{{ culture.month_end_name }}</td>
-                <td>
-                    <button class="btn btn-edit">Edit</button>
-                    <button class="btn btn-delete">Delete</button>
+                <td class="actions">
+                    <a href="{{ url_for('culture.edit_culture', id=culture.id) }}" class="action-link" title="Registrar evento"><i class="fas fa-pencil-alt"></i></a>
+                    <a href="#" class="action-link" title="Abrir detalhes"><i class="fas fa-eye"></i></a>
+                    {% if culture.status == 0 or culture.status == 2 %}
+                    <a href="#" class="action-link" title="Registrar evento de start"><i class="fas fa-play"></i></a>
+                    {% endif %}
+
+                    {% if culture.status == 1 %}
+                    <a href="#" class="action-link" title="Finalizar"><i class="fas fa-check"></i></a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

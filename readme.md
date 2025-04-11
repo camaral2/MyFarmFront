@@ -1,3 +1,15 @@
+## Commnad of Git
+```
+git config --global user.email "you@email.com"
+git config --global user.name "Your name""
+
+git add bees.txt
+git commit -m "Added bees.txt"
+git branch -M main
+git remote add origin http:\\....git
+
+git push -u origin main
+```
 
 pip install flask
 pip install requests

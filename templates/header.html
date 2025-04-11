@@ -1,4 +1,8 @@
 <div class="header">
-    <h1>{{page_title}}</h1>
-    <div>Welcome, <strong>{{ session.get('logged_in')['email'] }}</strong> !</div>
+  <h1>{{page_title}}</h1>
+  {% if current_user.is_authenticated %}
+  <div>Welcome, <strong>{{ current_user.email }} </strong>! </div>
+  {% else %}
+  <div><a href="{{ url_for('auth.login') }}">Login</a></div>
+  {% endif %}
 </div>
