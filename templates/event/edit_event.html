@@ -24,7 +24,7 @@
 
 <div class="card">
 <form method="POST" action="{{ form_action }}">
-    <input id="id" name="id" type="hidden" value="{{ Event_Culture.id if Event_Culture else 0 }}">
+    <input id="id" name="id" type="hidden" value="{{ event_culture.id if event_culture else 0 }}">
     <input id="idculture" name="idculture" type="hidden" value="{{ culture.id }}">
     <div class="form-group">
         <label for="name">Name</label>
@@ -34,12 +34,12 @@
     <div class="form-group">
         <label for="date" class="required">Date</label>
         <input type="date" id="date_event" name="date_event"
-        value="{% if Event_Culture and Event_Culture.date %}{{ Event_Culture.date.strftime('%Y-%m-%d') }}{% else %}{{ datetime.utcnow().strftime('%Y-%m-%d') }}{% endif %}">
+        value="{% if event_culture and event_culture.date %}{{ event_culture.date }}{% else %}{{ datetime.utcnow().strftime('%Y-%m-%d') }}{% endif %}">
      </div>
 
     <div class="form-group">
         <label for="event" class="required">Event</label>
-        <input type="text" id="event" name="event" value="{{ Event_Culture.event if Event_Culture else '' }}">
+        <input type="text" id="event" name="event" value="{{ event_culture.event if event_culture else '' }}">
     </div>
 
     <div class="form-group">
@@ -49,7 +49,7 @@
                 <option value="">Select mode</option>
                 {% for t in modes %}
                     <option value="{{ t.id }}"
-                        {% if Event_Culture and Event_Culture.mode == t.id %}selected{% endif %}>
+                        {% if event_culture and event_culture.mode == t.id %}selected{% endif %}>
                         {{ t.desc }}
                     </option>
                 {% endfor %}
@@ -59,7 +59,7 @@
 
     <div class="form-group">
         <label for="detail">Detail</label>
-        <textarea id="detail" name="detail">{{ Event_Culture.detail if Event_Culture else ''}}</textarea>
+        <textarea id="detail" name="detail">{{ event_culture.detail if event_culture else ''}}</textarea>
     </div>    
 
     <button type="submit" class="btn-submit">Submit</button>

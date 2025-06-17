@@ -6,7 +6,7 @@ import time
 from api_client import APIClient
 import api_client
 from user_login import User_Login
-from util import get_moon_phase, translate_phase_moon, month_desc
+from utils.util import get_moon_phase, translate_phase_moon, month_desc
 from culture import culture_blueprint
 from auth import auth_blueprint
 from events import events_blueprint
@@ -14,10 +14,12 @@ from datetime import timedelta
 
 from flask_login import login_required, current_user, LoginManager
 
-app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # Required for session management
+from utils.config import setting
 
-api_url = "http://127.0.0.1:8000/"  # Replace with your API URL
+app = Flask(__name__)
+app.secret_key = setting.secret_key # Required for session management
+
+api_url = setting.api_url  # Replace with your API URL
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'

@@ -3,9 +3,13 @@ import requests
 from flask_login import login_user, login_required, logout_user
 
 from user_login import User_Login
+
+from utils.config import setting
+
+
 auth_blueprint = Blueprint('auth', __name__)
 
-api_url = "http://127.0.0.1:8000/"  # Replace with your API URL
+api_url = setting.api_url  # Replace with your API URL
 
 @auth_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
