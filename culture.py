@@ -1,10 +1,11 @@
 import calendar
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from api_client import APIClient
+from utils.config import setting
 
 culture_blueprint = Blueprint('culture', __name__, template_folder='templates/culture')
 
-api_url = "http://127.0.0.1:8000/"  # Replace with your API URL
+api_url = setting.api_url  # Replace with your API URL
 
 @culture_blueprint.route('/')
 def list_cultures():

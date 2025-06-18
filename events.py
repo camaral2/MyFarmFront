@@ -1,13 +1,14 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from api_client import APIClient
-from util import get_mode_desc, list_modes
+from utils.util import get_mode_desc, list_modes
 
 from datetime import datetime, timedelta
+from utils.config import setting
 
 events_blueprint = Blueprint('events', __name__)
 
-api_url = "http://127.0.0.1:8000/"  # Replace with your API URL
+api_url = setting.api_url # Replace with your API URL
 
 
 @events_blueprint.route('/<int:idculture>/<int:id>', methods=['GET', 'POST'])
@@ -18,12 +19,15 @@ def edit_event(idculture, id):
     is_edit = False
     modes = list_modes()
 
-    if request.method == 'GET':        
+    if request.method == 'GET':    
         if id > 0: 
-            event_culture = client.get("event_culture/" + str(id))
+            event_culture = client.get("event_culture/item/" + str(id))
+            
+            print('Teste - event_culture: ' + str(event_culture))    
+            
             
             if event_culture:
-                culture = event_culture.culture
+                culture =event_culture["culture"]
                 is_edit = True
                 return render_template('event/edit_event.html', 
                                        culture = culture, is_edit = is_edit, 

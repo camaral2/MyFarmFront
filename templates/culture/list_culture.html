@@ -38,7 +38,7 @@
                 <td>{{ culture.month_end_name }}</td>
                 <td class="actions">
                     <a href="{{ url_for('culture.edit_culture', id=culture.id) }}" class="action-link" title="Registrar evento"><i class="fas fa-pencil-alt"></i></a>
-                    <a href="#" class="action-link" title="Abrir detalhes"><i class="fas fa-eye"></i></a>
+                    <a href="{{ url_for('events.list_events', idculture=culture.id) }}" class="action-link" title="Abrir detalhes"><i class="fas fa-eye"></i></a>
                     {% if culture.status == 0 or culture.status == 2 %}
                     <a href="#" class="action-link" title="Registrar evento de start"><i class="fas fa-play"></i></a>
                     {% endif %}
