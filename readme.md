@@ -21,3 +21,15 @@ https://hgbrasil.com/apis/planos
 
 Fase da Lua
 https://api.farmsense.net/v1/moonphases/?d=1742932763
+
+python3 main.py
+
+docker network create myfarm_net
+
+Dev:
+docker compose --profile dev up --build
+docker compose --profile dev up --build -d
+
+Prod:
+docker compose --profile prod up --build
+

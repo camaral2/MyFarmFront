@@ -87,6 +87,11 @@
     background-color: #28a745; /* verde */
   }
 
+  .tag-cost {
+    color: white;
+    background-color: #d23758; /* verde */
+  }
+
   .empty-state {
     text-align: center;
     padding: 60px 20px;

@@ -11,8 +11,8 @@ def translate_phase_moon(textEnghish: str):
 def get_moon_phase():
     timestamp = int(time.time())  # current UNIX time
     url = f"https://api.farmsense.net/v1/moonphases/?d={timestamp}"
-
-    response = requests.get(url)
+    
+    response = requests.get(url, verify=False)
     data = response.json()
 
     return  data[0]["Phase"]
@@ -28,7 +28,8 @@ def list_modes():
         {"id": 1, "desc": "Pre-plant"},
         {"id": 2, "desc": "Plant"},
         {"id": 3, "desc": "Management"},
-        {"id": 4, "desc": "Crop"}
+        {"id": 4, "desc": "Crop"},
+        {"id": 5, "desc": "Cost"}
     ]
     
 def get_mode_desc(mode_id):

@@ -4,6 +4,7 @@ from flask import Blueprint, Flask, render_template, request, redirect, url_for,
 import calendar
 import time
 from api_client import APIClient
+import os
 import api_client
 from user_login import User_Login
 from utils.util import get_moon_phase, translate_phase_moon, month_desc
@@ -20,6 +21,8 @@ app = Flask(__name__)
 app.secret_key = setting.secret_key # Required for session management
 
 api_url = setting.api_url  # Replace with your API URL
+
+#api_url = os.getenv("API_BASE_URL", "http://myfarm_api:8000")
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -53,6 +56,9 @@ def custom_401(error):
 @login_required
 @app.route("/")
 def admin_dashboard():
+    moon_phase_english = ""
+    moon_phase_portuguese = ""
+    
     try:
         client = APIClient(api_url)        
         cultures = client.get("/culture")
@@ -62,6 +68,7 @@ def admin_dashboard():
     
     try:
         moon_phase_english = get_moon_phase() 
+        print('Fase:' + moon_phase_english)
         moon_phase_portuguese = translate_phase_moon(moon_phase_english)
     except requests.exceptions.RequestException as e:
         flash(f"Moon Phase - Error: {str(e)}", "error")

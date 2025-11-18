@@ -1,0 +1,51 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+
+# Logs / runtime files
+*.log
+*.pid
+*.db
+*.sqlite3
+
+# Test files
+tests/
+coverage/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local development configs
+.env
+.env.*
+*.env
+.env_conf
+.env.dev
+.env.prod
+.env.local
+
+# IDEs / editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker internal
+Dockerfile*
+docker-compose*.yml
