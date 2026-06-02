@@ -33,3 +33,10 @@ docker compose --profile dev up --build -d
 Prod:
 docker compose --profile prod up --build
 
+-----
+python3 -m venv .venv
+source .venv/bin/activate
+
+pip freeze > requirements.txt
+pip install -r requirements.txt
+

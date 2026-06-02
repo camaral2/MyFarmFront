@@ -11,6 +11,7 @@ from utils.util import get_moon_phase, translate_phase_moon, month_desc
 from culture import culture_blueprint
 from auth import auth_blueprint
 from events import events_blueprint
+from cost_credit import cost_credit_blueprint
 from datetime import timedelta
 
 from flask_login import login_required, current_user, LoginManager
@@ -91,6 +92,7 @@ def admin_dashboard():
 
 app.register_blueprint(culture_blueprint, url_prefix='/culture')
 app.register_blueprint(events_blueprint, url_prefix='/event')
+app.register_blueprint(cost_credit_blueprint, url_prefix='/cost_credit')
 app.register_blueprint(auth_blueprint, url_prefix='/')
 
 if __name__ == "__main__":

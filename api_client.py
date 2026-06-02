@@ -28,36 +28,54 @@ class APIClient:
                     message = detail[0].get("message")
                 raise RuntimeError(f"API Error: {message or str(detail)}")
             except Exception:
-                print(response.json())
+                print(f"Response content: {response.text}")
                 raise RuntimeError(f"API request failed: {str(e)}") from e
+
+    def _join_url(self, endpoint):
+        base = self.base_url.rstrip('/')
+        path = endpoint.lstrip('/')
+        return f"{base}/{path}"
 
     def get(self, endpoint):
         try:
-            print('api_client.get')
-            response = requests.get(f"{self.base_url}{endpoint}", headers=self._headers())
+            print(f'api_client.get {endpoint}')
+            url = self._join_url(endpoint)
+            response = requests.get(url, headers=self._headers())
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             raise RuntimeError(f"API request failed: {str(e)}") from e
+        except ValueError as e: # Catch JSON decode errors
+            raise RuntimeError(f"API returned invalid JSON: {str(e)}") from e
 
     def post(self, endpoint, json=None):
         try:
-            print('api_client.post')
-            response = requests.post(f"{self.base_url}{endpoint}", headers=self._headers(), json=json)
+            print(f'api_client.post {endpoint}')
+            url = self._join_url(endpoint)
+            response = requests.post(url, headers=self._headers(), json=json)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             raise RuntimeError(f"API request failed: {str(e)}") from e
+        except ValueError as e:
+            raise RuntimeError(f"API returned invalid JSON: {str(e)}") from e
 
     def put(self, endpoint, json=None):
         try:
-            print('api_client.put')
-            response = requests.put(f"{self.base_url}{endpoint}", headers=self._headers(), json=json)
+            print(f'api_client.put {endpoint}')
+            url = self._join_url(endpoint)
+            response = requests.put(url, headers=self._headers(), json=json)
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             raise RuntimeError(f"API request failed: {str(e)}") from e
+        except ValueError as e:
+            raise RuntimeError(f"API returned invalid JSON: {str(e)}") from e
 
     def delete(self, endpoint):
         try:
-            response = requests.delete(f"{self.base_url}{endpoint}", headers=self._headers())
+            print(f'api_client.delete {endpoint}')
+            url = self._join_url(endpoint)
+            response = requests.delete(url, headers=self._headers())
             return self._handle_response(response)
         except requests.exceptions.RequestException as e:
             raise RuntimeError(f"API request failed: {str(e)}") from e
+        except ValueError as e:
+            raise RuntimeError(f"API returned invalid JSON: {str(e)}") from e

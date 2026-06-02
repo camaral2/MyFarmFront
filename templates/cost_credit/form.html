@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block page_title %}{% if id > 0 %}Edit{% else %}New{% endif %} Cost/Credit Entry{% endblock %}
+
+{% block sidebar %}
+{% include "sidebar.html" %}
+{% endblock %}
+
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="form-container"
+    style="max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <form method="POST">
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label for="type" style="display: block; margin-bottom: 5px;">Type</label>
+            <select name="type" id="type" required
+                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                <option value="Cost" {% if entry and entry.type=='Cost' %}selected{% endif %}>Cost</option>
+                <option value="Credit" {% if entry and entry.type=='Credit' %}selected{% endif %}>Credit</option>
+            </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label for="amount" style="display: block; margin-bottom: 5px;">Amount</label>
+            <input type="number" step="0.01" name="amount" id="amount" required
+                value="{{ entry.amount if entry else '' }}"
+                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label for="description" style="display: block; margin-bottom: 5px;">Description</label>
+            <input type="text" name="description" id="description" value="{{ entry.description if entry else '' }}"
+                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label for="date" style="display: block; margin-bottom: 5px;">Date</label>
+            <input type="date" name="date" id="date" required value="{{ entry.date if entry else '' }}"
+                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="culture_id" style="display: block; margin-bottom: 5px;">Culture</label>
+            <select name="culture_id" id="culture_id" required
+                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                <option value="">Select a Culture</option>
+                {% for culture in cultures %}
+                <option value="{{ culture.id }}" {% if entry and entry.culture_id|string==culture.id|string %}selected{%
+                    endif %}>{{ culture.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-actions" style="display: flex; gap: 10px;">
+            <button type="submit" class="save-button"
+                style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Save</button>
+            <a href="{{ url_for('cost_credit.list_cost_credits') }}" class="cancel-button"
+                style="background: #f44336; color: white; text-decoration: none; padding: 10px 20px; border-radius: 4px;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

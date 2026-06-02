@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+{% block page_title %}Cost & Credit Management{% endblock %}
+
+{% block sidebar %}
+{% include "sidebar.html" %}
+{% endblock %}
+
+{% block header %}
+{% include "header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="controls">
+    <form action="{{ url_for('cost_credit.edit_cost_credit', id=0) }}" method="GET" style="display: inline;">
+        <button type="submit" class="add-button">
+            <i class="fas fa-plus"></i> Create New
+        </button>
+    </form>
+    
+    <form action="{{ url_for('cost_credit.list_cost_credits') }}" method="GET" class="filter-form" style="display: inline-flex; gap: 10px; align-items: center; margin-left: 20px;">
+        <label>Start: <input type="date" name="start_date" value="{{ filters.start_date or '' }}"></label>
+        <label>End: <input type="date" name="end_date" value="{{ filters.end_date or '' }}"></label>
+        <label>Culture: 
+            <select name="culture_id">
+                <option value="0">All</option>
+                {% for culture in cultures %}
+                <option value="{{ culture.id }}" {% if filters.culture_id|string == culture.id|string %}selected{% endif %}>{{ culture.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit" class="filter-button"><i class="fas fa-filter"></i> Filter</button>
+    </form>
+</div>
+
+<div class="stats-cards" style="display: flex; gap: 20px; margin-bottom: 20px;">
+    <div class="card" style="background: #e8f5e9; padding: 15px; border-radius: 8px;">
+        <h3>Total Credit</h3>
+        <p style="color: green; font-weight: bold;">{{ "%.2f"|format(total_credit) }}</p>
+    </div>
+    <div class="card" style="background: #ffebee; padding: 15px; border-radius: 8px;">
+        <h3>Total Cost</h3>
+        <p style="color: red; font-weight: bold;">{{ "%.2f"|format(total_cost) }}</p>
+    </div>
+    <div class="card" style="background: #e3f2fd; padding: 15px; border-radius: 8px;">
+        <h3>Balance</h3>
+        <p style="color: {% if total_credit - total_cost >= 0 %}blue{% else %}red{% endif %}; font-weight: bold;">
+            {{ "%.2f"|format(total_credit - total_cost) }}
+        </p>
+    </div>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Culture</th>
+                <th>Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cost_credits %}
+            <tr>
+                <td>{{ item.date }}</td>
+                <td>
+                    <span class="badge {% if item.type == 'Credit' %}badge-success{% else %}badge-danger{% endif %}" 
+                          style="padding: 4px 8px; border-radius: 4px; color: white; background-color: {% if item.type == 'Credit' %}green{% else %}red{% endif %};">
+                        {{ item.type }}
+                    </span>
+                </td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.culture_name }}</td>
+                <td>{{ "%.2f"|format(item.amount) }}</td>
+                <td class="actions">
+                    <a href="{{ url_for('cost_credit.edit_cost_credit', id=item.id) }}" class="action-link" title="Edit"><i class="fas fa-pencil-alt"></i></a>
+                    <a href="{{ url_for('cost_credit.delete_cost_credit', id=item.id) }}" class="action-link" title="Delete" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center;">No entries found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
